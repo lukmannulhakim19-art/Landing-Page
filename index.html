@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanData Pro - Professional Data Cleaning & Auto-Correction Service</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .hero-bg {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23ffffff08" points="0,0 1000,300 1000,1000 0,700"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2a5298;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #2a5298;
+        }
+
+        .hero {
+            padding: 120px 0 80px;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.2s forwards;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.4s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #ff6b6b;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #2a5298;
+        }
+
+        .features {
+            padding: 80px 0;
+            background: #f8f9ff;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: #2a5298;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .pricing {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .pricing-calculator {
+            background: #f8f9ff;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .calculator-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-group {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2a5298;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .pricing-result {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 3px solid #667eea;
+        }
+
+        .price-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2a5298;
+            margin-bottom: 1rem;
+        }
+
+        .price-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .breakdown-item {
+            background: #f8f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .demo {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+        }
+
+        .demo-form {
+            max-width: 500px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .stats {
+            padding: 60px 0;
+            background: #2a5298;
+            color: white;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-item h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .calculator-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">🧹 CleanData Pro</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero hero-bg">
+        <div class="container">
+            <h1>Clean Your Data in Minutes,<br>Not Hours</h1>
+            <p>Professional data cleaning & auto-correction service that improves your customer data quality by up to 95%. Perfect for CRM, marketing campaigns, and business intelligence.</p>
+            <div class="cta-buttons">
+                <a href="#demo" class="btn btn-primary pulse-animation">Start Free Trial</a>
+                <a href="#pricing" class="btn btn-secondary">View Pricing</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>95%</h3>
+                    <p>Data Quality Improvement</p>
+                </div>
+                <div class="stat-item">
+                    <h3>10M+</h3>
+                    <p>Records Processed</p>
+                </div>
+                <div class="stat-item">
+                    <h3>5min</h3>
+                    <p>Average Processing Time</p>
+                </div>
+                <div class="stat-item">
+                    <h3>99.9%</h3>
+                    <p>Uptime Guarantee</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Data Cleaning Features</h2>
+            <div class="features-grid">
+                <div class="feature-card floating-animation">
+                    <div class="feature-icon">📧</div>
+                    <h3>Email Correction</h3>
+                    <p>Fix typos, standardize formats, and validate email addresses to improve deliverability by 40%</p>
+                </div>
+                <div class="feature-card floating-animation">
+                    <div class="feature-icon">📱</div>
+                    <h3>Phone Standardization</h3>
+                    <p>Convert phone numbers to consistent Indonesian format with country codes and proper formatting</p>
+                </div>
+                <div class="feature-card floating-animation">
+                    <div class="feature-icon">👤</div>
+                    <h3>Name Correction</h3>
+                    <p>Standardize names with proper capitalization, remove extra spaces, and fix common typos</p>
+                </div>
+                <div class="feature-card floating-animation">
+                    <div class="feature-icon">🏢</div>
+                    <h3>Company Standardization</h3>
+                    <p>Clean company names, remove duplicates, and standardize business entity formats (PT, CV, etc.)</p>
+                </div>
+                <div class="feature-card floating-animation">
+                    <div class="feature-icon">📍</div>
+                    <h3>Address Correction</h3>
+                    <p>Fix abbreviations, standardize formats, and improve address completeness</p>
+                </div>
+                <div class="feature-card floating-animation">
+                    <div class="feature-icon">📊</div>
+                    <h3>Quality Scoring</h3>
+                    <p>Get detailed quality reports and improvement metrics for every data cleaning job</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Transparent Pricing Calculator</h2>
+            
+            <div class="pricing-calculator" x-data="pricingCalculator()">
+                <div class="calculator-controls">
+                    <div class="control-group">
+                        <label>Monthly Records</label>
+                        <input type="range" 
+                               x-model="records" 
+                               min="1000" 
+                               max="1000000" 
+                               step="1000" 
+                               class="slider">
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                            <span>1K</span>
+                            <span x-text="formatNumber(records)"></span>
+                            <span>1M</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Processing Speed</label>
+                        <select x-model="speed">
+                            <option value="standard">Standard (24 hours)</option>
+                            <option value="priority">Priority (4 hours) +25%</option>
+                            <option value="express">Express (1 hour) +50%</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Features</label>
+                        <div style="margin-top: 0.5rem;">
+                            <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" x-model="features.api" style="margin-right: 0.5rem; width: auto;">
+                                API Access (+$10/month)
+                            </label>
+                            <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" x-model="features.priority" style="margin-right: 0.5rem; width: auto;">
+                                Priority Support (+$15/month)
+                            </label>
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" x-model="features.custom" style="margin-right: 0.5rem; width: auto;">
+                                Custom Rules (+$25/month)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pricing-result">
+                    <div class="price-display" x-text="'$' + calculatePrice().total"></div>
+                    <p>per month</p>
+                    
+                    <div class="price-breakdown">
+                        <div class="breakdown-item">
+                            <strong>Base Cost</strong><br>
+                            <span x-text="'$' + calculatePrice().base"></span>
+                        </div>
+                        <div class="breakdown-item" x-show="calculatePrice().speed > 0">
+                            <strong>Speed Bonus</strong><br>
+                            <span x-text="'$' + calculatePrice().speed"></span>
+                        </div>
+                        <div class="breakdown-item" x-show="calculatePrice().features > 0">
+                            <strong>Add-ons</strong><br>
+                            <span x-text="'$' + calculatePrice().features"></span>
+                        </div>
+                        <div class="breakdown-item">
+                            <strong>Cost per Record</strong><br>
+                            <span x-text="'$' + (calculatePrice().total / records * 1000).toFixed(4)"></span>
+                        </div>
+                    </div>
+                    
+                    <a href="#demo" class="btn btn-primary" style="margin-top: 2rem;">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section class="demo" id="demo">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Start Your Free Trial</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">Process up to 1,000 records free. No credit card required.</p>
+            
+            <div class="demo-form" x-data="demoForm()">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" x-model="form.name" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Business Email</label>
+                    <input type="email" x-model="form.email" placeholder="you@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" x-model="form.company" placeholder="Your company name" required>
+                </div>
+                <div class="form-group">
+                    <label>Estimated Monthly Records</label>
+                    <select x-model="form.records">
+                        <option value="1000-5000">1,000 - 5,000</option>
+                        <option value="5000-25000">5,000 - 25,000</option>
+                        <option value="25000-100000">25,000 - 100,000</option>
+                        <option value="100000+">100,000+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data Types (select all that apply)</label>
+                    <div style="margin-top: 0.5rem;">
+                        <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" x-model="form.dataTypes" value="email" style="margin-right: 0.5rem; width: auto;">
+                            Email addresses
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" x-model="form.dataTypes" value="phone" style="margin-right: 0.5rem; width: auto;">
+                            Phone numbers
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" x-model="form.dataTypes" value="names" style="margin-right: 0.5rem; width: auto;">
+                            Names
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" x-model="form.dataTypes" value="addresses" style="margin-right: 0.5rem; width: auto;">
+                            Addresses
+                        </label>
+                        <label style="display: flex; align-items: center; font-weight: normal;">
+                            <input type="checkbox" x-model="form.dataTypes" value="companies" style="margin-right: 0.5rem; width: auto;">
+                            Company names
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Requirements</label>
+                    <textarea x-model="form.requirements" rows="3" placeholder="Tell us about your specific data cleaning needs..."></textarea>
+                </div>
+                <button @click="submitForm()" class="btn btn-primary" style="width: 100%;" :disabled="submitting">
+                    <span x-show="!submitting">Start Free Trial</span>
+                    <span x-show="submitting">Processing...</span>
+                </button>
+                
+                <div x-show="submitted" style="margin-top: 1rem; padding: 1rem; background: #d4edda; border-radius: 8px; color: #155724;">
+                    ✅ Thank you! We'll contact you within 24 hours with your free trial access.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CleanData Pro. Built with ❤️ for better data quality.</p>
+            <p>Contact: hello@cleandatapro.com | +62-XXX-XXXX-XXXX</p>
+        </div>
+    </footer>
+
+    <script>
+        function pricingCalculator() {
+            return {
+                records: 10000,
+                speed: 'standard',
+                features: {
+                    api: false,
+                    priority: false,
+                    custom: false
+                },
+                
+                formatNumber(num) {
+                    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+                    if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+                    return num.toString();
+                },
+                
+                calculatePrice() {
+                    let base = 0;
+                    
+                    // Base pricing tiers
+                    if (this.records <= 5000) base = 29;
+                    else if (this.records <= 25000) base = 79;
+                    else if (this.records <= 100000) base = 199;
+                    else base = 499;
+                    
+                    // Speed multiplier
+                    let speedMultiplier = 1;
+                    if (this.speed === 'priority') speedMultiplier = 1.25;
+                    else if (this.speed === 'express') speedMultiplier = 1.5;
+                    
+                    let speedCost = Math.round(base * (speedMultiplier - 1));
+                    
+                    // Feature add-ons
+                    let featureCost = 0;
+                    if (this.features.api) featureCost += 10;
+                    if (this.features.priority) featureCost += 15;
+                    if (this.features.custom) featureCost += 25;
+                    
+                    return {
+                        base: base,
+                        speed: speedCost,
+                        features: featureCost,
+                        total: base + speedCost + featureCost
+                    };
+                }
+            }
+        }
+        
+        function demoForm() {
+            return {
+                form: {
+                    name: '',
+                    email: '',
+                    company: '',
+                    records: '1000-5000',
+                    dataTypes: [],
+                    requirements: ''
+                },
+                submitting: false,
+                submitted: false,
+                
+                async submitForm() {
+                    this.submitting = true;
+                    
+                    // Simulate form submission
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    // Here you would typically send to your n8n webhook
+                    console.log('Form submitted:', this.form);
+                    
+                    this.submitting = false;
+                    this.submitted = true;
+                    
+                    // Reset form after 5 seconds
+                    setTimeout(() => {
+                        this.submitted = false;
+                        this.form = {
+                            name: '',
+                            email: '',
+                            company: '',
+                            records: '1000-5000',
+                            dataTypes: [],
+                            requirements: ''
+                        };
+                    }, 5000);
+                }
+            }
+        }
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>
